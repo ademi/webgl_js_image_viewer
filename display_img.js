@@ -68,7 +68,7 @@
         setup_imgLoaded(){
             const parent = this;    
             parent.img = new Image();
-            parent.img.src = "./test.jpg";
+            parent.img.src = "./example.jpg";
             parent.img.onload = (function(){
                 
                 parent.viewer.init(parent.canvas,parent.img);
@@ -93,7 +93,7 @@
             /*Shaders*/
             let vertex_shader=`
             attribute vec2 a_position ;
-            attribute vec2 a_tex_coord;
+            //attribute vec2 a_tex_coord;
 
             uniform vec2 u_displacement;
             uniform float u_aspect;
@@ -105,10 +105,11 @@
                 vec2 _position = a_position;//  + u_displacement;
                 gl_Position = vec4(
                         _position.x*u_zoom_factor +u_displacement.x,
-                        (_position.y*u_zoom_factor*u_aspect + u_displacement.y)*-1.0,
-                        0,1);
+                        (_position.y*u_zoom_factor*u_aspect - u_displacement.y),
+                        0.0,1.0);
         
-                v_tex_coord = a_tex_coord;
+                //v_tex_coord = a_tex_coord;
+                v_tex_coord = vec2((_position.x+1.0)/2.0,(1.0-_position.y)/2.0);
             }
             `
             let frag_shader=
@@ -130,7 +131,7 @@
             );
     
             this.position_handler = this.gl.getAttribLocation(this.program,'a_position');
-            this.texture_hadnler = this.gl.getAttribLocation(this.program,'a_tex_coord');
+            //this.texture_hadnler = this.gl.getAttribLocation(this.program,'a_tex_coord');
 
             this.displacement_handler = this.gl.getUniformLocation(this.program,'u_displacement');
             this.aspect_handler = this.gl.getUniformLocation(this.program,'u_aspect');
@@ -149,17 +150,17 @@
                 1.0,    1.0 ,
             ]), this.gl.STATIC_DRAW);
 
-            this.texture_buffer = this.gl.createBuffer();
-            this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.texture_buffer);
-            this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array([
-                0.0,0.0,
-                1.0,0.0,
-                0.0,1.0,
+            //this.texture_buffer = this.gl.createBuffer();
+            //this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.texture_buffer);
+            //this.gl.bufferData(this.gl.ARRAY_BUFFER,new Float32Array([
+                //0.0,0.0,
+                //1.0,0.0,
+                //0.0,1.0,
 
-                0.0,1.0,
-                1.0,0.0,
-                1.0,1.0,
-            ]),this.gl.STATIC_DRAW);
+                //0.0,1.0,
+                //1.0,0.0,
+                //1.0,1.0,
+            //]),this.gl.STATIC_DRAW);
 
             let texture = this.gl.createTexture();
             this.gl.bindTexture(this.gl.TEXTURE_2D,texture);
@@ -214,7 +215,7 @@
                 //zoom    :   Math.max(0.0,Math.min(2.0,concrete_config.zoom || this.config.zoom)),
             //}
             //console.log(this.config)
-            console.log('_____________________________________________')
+            //console.log('_____________________________________________')
         }
         refresh (config){
             
@@ -241,20 +242,21 @@
             );
 
             // Set Texture info
-            this.gl.enableVertexAttribArray(this.texture_hadnler);
-            this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.texture_buffer);
-            this.gl.vertexAttribPointer(
-                this.texture_hadnler, // the pointer
-                2,                // coordinate size
-                this.gl.FLOAT,         // Type
-                false,            // Normalize
-                0,                // Stride
-                0,                //offset
-            );
+            //this.gl.enableVertexAttribArray(this.texture_hadnler);
+            //this.gl.bindBuffer(this.gl.ARRAY_BUFFER,this.texture_buffer);
+            //this.gl.vertexAttribPointer(
+                //this.texture_hadnler, // the pointer
+                //2,                // coordinate size
+                //this.gl.FLOAT,         // Type
+                //false,            // Normalize
+                //0,                // Stride
+                //0,                //offset
+            //);
 
             
             //Set aspect
-            this.gl.uniform1f(this.aspect_handler, this.img.height/this.img.width);
+            const aspect = (this.img.height/this.img.width)*(this.canvas.width/this.canvas.height)
+            this.gl.uniform1f(this.aspect_handler, aspect);
             // set zooming factor
             this.gl.uniform1f(this.zooming_handler,this.config.zoom);
             // set up displacement
