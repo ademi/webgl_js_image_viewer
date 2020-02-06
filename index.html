@@ -3,16 +3,36 @@
 
   <head>
     <meta charset="utf-8">
-    <title>WebGL Demo</title>
-    
+    <title>WebGL image viewer</title>
+    <style>
+
+      h1 {
+        font-size: 1.0rem;
+      }
+
+      .container {
+        margin: 0 auto 0 auto;
+        width: 80%;
+      }
+      .container canvas{
+        width:100%;
+        height:900px;
+        border:1px solid #000;
+      }
+      </style>
   </head>
 
   <body>
-    <canvas id="glcanvas" width="1200" height="960" style="border:1px solid #000"></canvas>
+    <div class = "container">
+      <h1>WebGl image Viewer: drag and drop an image to view, use mouse to control</h1>
+      <canvas id="glcanvas"></canvas>
+    </div>
   </body>
+
 
 
   <script src="gl-matrix.js"></script>
   <script src="utils.js"></script>
-  <script src="display_img.js"></script>
+  <script src="viewer.js"></script>
+  <script src="app.js"></script>
 </html>
