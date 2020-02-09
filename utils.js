@@ -90,8 +90,8 @@
     utils.resize_canvas = function (canvas,ratio){
         let multiplier = ratio||1;
 
-        new_width = canvas.clientWidth* multiplier |0;
-        new_height= canvas.clientHeight * multiplier |0;
+        let new_width = canvas.clientWidth* multiplier |0;
+        let new_height= canvas.clientHeight * multiplier |0;
 
         if(canvas.width !=new_width || canvas.height != new_height){
             canvas.width =new_width;
